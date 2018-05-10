@@ -153,4 +153,15 @@ void Kivalaszto_widget::push_back(string s)
 {
     _v.push_back(s);
 }
-
+string Kivalaszto_widget::getter_string() const
+{
+    return _ertek;
+}
+int Kivalaszto_widget::getter_int() const
+{
+    stringstream s;
+    s<<_ertek;
+    int i;
+    s>>i;
+    return i;
+}

@@ -7,6 +7,7 @@ protected:
     std::vector<Widget*> _widgets;
 public:
     void push_back(Widget *v);
+    void eraseall();
     virtual void esemeny_ciklus()=0;
 };
 

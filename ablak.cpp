@@ -7,17 +7,13 @@ void Ablak::push_back(Widget *v){
 
 void Ablak::esemeny_ciklus()
 {
-    /*event ev;
-    while(gin >> ev && ev.keycode!=key_escape) {
-        for(Widget *w : _widgets){
-            w->select(ev);
-        }
-        for(Widget *w : _widgets){
-            w->ertek_valtozas(ev);
-        }
-        for(const Widget *w : _widgets){
-            w->rajzol();
-        }
-    }*/
+
 }
 
+void Ablak::eraseall()
+{
+    for(size_t i=0;i<_widgets.size();i++)
+    {
+        _widgets.pop_back();
+    }
+}

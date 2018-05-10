@@ -17,5 +17,7 @@ public:
     virtual void ertek_valtozas(genv::event ev) override;
     virtual void select(event ev) override;
     virtual void push_back(std::string s);
+    std::string getter_string() const;
+    int getter_int() const;
 };
 #endif // KIVALASZTO_WIDGET_HPP_INCLUDED
