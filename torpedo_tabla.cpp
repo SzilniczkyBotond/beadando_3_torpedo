@@ -70,3 +70,8 @@ void Terulet::select(event ev)
         }
     }
 }
+bool Tabla::get_terulet(int x, int y)
+{
+    return _v[x][y]->_hajo;
+}
+

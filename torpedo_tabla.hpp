@@ -21,6 +21,7 @@ public:
     Tabla(float x, float y, float sx, float sy, string nev);
     virtual void rajzol() const override;
     virtual void select(genv::event ev) override;
+    bool get_terulet(int x, int y);
 };
 
 class Terulet : public Widget

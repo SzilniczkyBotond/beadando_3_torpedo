@@ -1,5 +1,6 @@
 #include "../../headers/legjobb_widget.hpp"
 #include "../../headers/ablak.hpp"
+#include "../../headers/torpedo_gamemaster.hpp"
 #include <cstdlib>
 
 using namespace std;
@@ -8,6 +9,7 @@ using namespace genv;
 class Enablakom : public Ablak
 {
 public:
+    Game_master *_GM;
     Tabla *t1;
     Tabla *t2;
     Kivalaszto_widget *k1;
@@ -34,6 +36,7 @@ Enablakom::Enablakom()
     _widgets.push_back(t2);
     _widgets.push_back(k1);
     _widgets.push_back(k2);
+    _GM = new Game_master();
 }
 
 void Enablakom::esemeny_ciklus()
@@ -53,10 +56,25 @@ void Enablakom::e_hajo_elhelyez()
         {
             w->select(ev);
         }
+        for(size_t y=0; y<_GM->_kezdeti_1.size(); y++){
+            for(size_t x=0; x<_GM->_kezdeti_1[y].size(); x++){
+                _GM->_kezdeti_1[x][y]=t1->get_terulet(x,y);
+            }
+        }
+        for(size_t y=0; y<_GM->_kezdeti_1.size(); y++){
+            for(size_t x=0; x<_GM->_kezdeti_1[y].size(); x++){
+                _GM->_kezdeti_2[x][y]=t2->get_terulet(x,y);
+            }
+        }
         for(Widget *w : _widgets)
         {
             w->ertek_valtozas(ev);
         }
+        _GM->_hossz=k1->getter_int();
+        cout << _GM->_hossz << endl;
+        _GM->_irany=k2->getter_string();
+        cout << _GM->_irany << endl;
+        cout << endl;
         for(Widget *w : _widgets)
         {
             w->rajzol();
