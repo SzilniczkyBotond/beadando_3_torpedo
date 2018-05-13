@@ -16,7 +16,7 @@ protected:
     int _hossz;
     int _size;
 public:
-    Hajo(Terulet *t, float x, float y, float sx, float sy);
+    Hajo(Terulet *t, float x, float y, float sx, float sy, std::string irany, int hossz);
     virtual void rajzol() const override{};
 };
 

@@ -1,4 +1,5 @@
 #include "widget.hpp"
+using namespace std;
 using namespace genv;
 
 Widget :: Widget(float pozx, float pozy, float meretx, float merety)
@@ -23,4 +24,8 @@ void Widget::select(event ev){
             _r=_g=_b=255;
         }
     }
+}
+void Widget::select(event ev,int a,string s)
+{
+
 }

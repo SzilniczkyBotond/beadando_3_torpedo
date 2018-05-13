@@ -16,6 +16,7 @@ public:
     virtual void rajzol() const = 0;
     virtual void ertek_valtozas(event ev);
     virtual void select(event ev);
+    virtual void select(event ev, int a, string s);
 };
 
 #endif // WIDGET_HPP_INCLUDED
