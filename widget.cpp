@@ -29,3 +29,7 @@ void Widget::select(event ev,int a,string s)
 {
 
 }
+void Widget::select(event ev,int a,string s, bool &b, bool &c)
+{
+
+}

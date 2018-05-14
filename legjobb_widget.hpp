@@ -8,6 +8,7 @@
 #include "sakkbabuk.hpp"
 #include "hajo_widget.hpp"
 #include "torpedo_tabla.hpp"
+#include "static_text_widget.hpp"
 
 
 #endif // LEGJOBB_WIDGET_HPP_INCLUDED

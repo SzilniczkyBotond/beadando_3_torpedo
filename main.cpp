@@ -18,11 +18,14 @@ public:
     Kivalaszto_widget *k1;
     Kivalaszto_widget *k2;
     Kivalaszto_widget *k3;
+    Static_text_widget *s1;
+    Static_text_widget *s2;
     Enablakom();
     virtual void esemeny_ciklus() override;
     virtual void e_jatek();
     virtual void e_hajo_elhelyez();
     virtual void e_enemygenerator();
+    virtual void e_end();
 };
 
 Enablakom::Enablakom()
@@ -34,13 +37,16 @@ Enablakom::Enablakom()
     k1 = new Kivalaszto_widget(20,325,150,20,5,ss);
     vector<string> sss = {"lefele","jobbra"};
     k2 = new Kivalaszto_widget(20,450,150,20,2,sss);
-    vector<string> ssss = {"normál","speciális"};
+    vector<string> ssss = {"normÃ¡l","speciÃ¡lis"};
     k3 = new Kivalaszto_widget(20,350,150,20,2,ssss);
+    s1 = new Static_text_widget(300,200,20,20,"Build your navy!");
+    s2 = new Static_text_widget(300,225,20,20,"gyÅ‘ztes");
     _GM = new Game_master();
 }
 
 void Enablakom::esemeny_ciklus()
 {
+    _widgets.push_back(s1);
     _widgets.push_back(t1);
     _widgets.push_back(t2);
     _widgets.push_back(k1);
@@ -49,14 +55,16 @@ void Enablakom::esemeny_ciklus()
     e_enemygenerator(); ///e_ID = 2
     eraseall(2);
     clrscr(XX,YY);
+    s1->set_s("Fight!");
     e_jatek(); ///e_ID = 3
+    e_end();
 }
 void Enablakom::e_hajo_elhelyez()
 {
     t1->e_ID = 1;
     t2->e_ID = 1;
     event ev;
-    while(gin >> ev && t1->get_hajok_szama()!=5 && ev.keycode!=key_enter)
+    while(gin >> ev && t1->get_hajok_szama()!=5)
     {
         if(ev.keycode == key_escape){
                 exit(0);
@@ -97,27 +105,93 @@ void Enablakom::e_enemygenerator()
 }
 void Enablakom::e_jatek()
 {
-    cout << "game" << endl;
-    t1->e_ID = 3;
-    t2->e_ID = 3;
     event ev;
-    while(gin >> ev)
+    bool game_over = false;
+    while(gin >> ev && !game_over)
     {
-        if(ev.keycode == key_escape){
-                exit(0);
+        bool loves = false;
+        t1->e_ID = 3;
+        t2->e_ID = 3;
+        while(gin >> ev && !loves){
+            if(ev.keycode == key_escape){
+                    exit(0);
+            }
+            for(Widget *w : _widgets)
+            {
+                //w->select(ev);
+                w->select(ev,_GM->_hossz,_GM->_irany,loves,game_over);
+            }
+            for(Widget *w : _widgets)
+            {
+                w->rajzol();
+            }
+            gout << refresh;
         }
+        if(game_over){
+            e_end();
+        }
+        t1->e_ID = 4;
+        t2->e_ID = 4;
+        loves = false;
         for(Widget *w : _widgets)
         {
-            w->select(ev);
+            //w->select(ev);
+            w->select(ev,_GM->_hossz,_GM->_irany,loves,game_over);
         }
         for(Widget *w : _widgets)
         {
             w->rajzol();
         }
         gout << refresh;
+        t1->e_ID = 3;
+        t2->e_ID = 3;
+        loves = false;
     }
 }
-
+void Enablakom::e_end()
+{
+    event ev;
+    int live=t1->_hajo.size();
+    for(size_t i=0; i<t1->_hajo.size(); i++){
+        int elet=t1->_hajo[i]->_hely.size();
+        for(size_t j=0; j<t1->_hajo[i]->_hely.size(); j++){
+            if(t1->_hajo[i]->_hely[j]->_lottek_mar){
+                elet--;
+            }
+        }
+        if(!elet){live--;}
+    }
+    if(!live){
+        s2->set_s("You lose!");
+    }
+    live=t2->_hajo.size();
+    for(size_t i=0; i<t2->_hajo.size(); i++){
+        int elet=t2->_hajo[i]->_hely.size();
+        for(size_t j=0; j<t2->_hajo[i]->_hely.size(); j++){
+            if(t2->_hajo[i]->_hely[j]->_lottek_mar){
+                elet--;
+            }
+        }
+        if(!elet){live--;}
+    }
+    if(!live){
+        s2->set_s("You win!");
+    }
+    clrscr(XX,YY);
+    s1->set_s("END");
+    _widgets.push_back(s2);
+    for(Widget *w : _widgets)
+    {
+        w->rajzol();
+    }
+    gout << refresh;
+    eraseall(3);
+    while(gin >> ev){
+        if(ev.keycode==key_escape){
+            exit(0);
+        }
+    }
+}
 
 int main()
 {

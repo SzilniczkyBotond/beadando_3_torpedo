@@ -11,6 +11,11 @@ const int meret=30;
 const int tabla_meret=8;
 const int gray=100;
 const int light_gray=200;
+const int light_red=250;
+const int red=100;
+const int white=255;
+const int light_blue=255;
+const int blue=100;
 
 
 Terulet::Terulet(Tabla *t, float x, float y, float sx, float sy) : Widget(x,y,sx,sy), _t(t)
@@ -19,6 +24,7 @@ Terulet::Terulet(Tabla *t, float x, float y, float sx, float sy) : Widget(x,y,sx
     _b=255;
     _size=meret-ketto;
     _hajo=false;
+    _lottek_mar=false;
 }
 Tabla::Tabla(float x, float y, float sx, float sy, string nev) : Widget(x,y,sx,sy),  _nev(nev)
 {
@@ -79,7 +85,7 @@ void Terulet::select(event ev, int hossz, string irany)
             if(_t->_nev == "player"){
                 if(!_hajo){
                     _r=_g=0;
-                    _b=255;
+                    _b=white;
                 }
                 if(ex>_pozx && ex<_pozx+_meretx && ey>_pozy && ey<_pozy+_merety && _r!=gray && _g!=gray && _b!=gray){
                     _r=_g=_b=gray;
@@ -100,7 +106,7 @@ void Terulet::select(event ev, int hossz, string irany)
                     }
                     if(ev.button==btn_left && !van_hajo){
                         if(irany=="lefele"){
-                            Hajo *v = new Hajo(this, _pozx,_pozy, (float)_size,(float)_size, irany, hossz);
+                            Hajo *v = new Hajo(this, _pozx,_pozy, (float)_size,(float)_size, irany, hossz, it_x, it_y);
                             switch (v->_hossz){
                                 case 1 : _t->_h1++; break;
                                 case 2 : _t->_h2++; break;
@@ -117,7 +123,7 @@ void Terulet::select(event ev, int hossz, string irany)
                             }
                         }
                         if(irany=="jobbra"){
-                            Hajo *v = new Hajo(this, _pozx,_pozy, (float)_size,(float)_size, irany, hossz);
+                            Hajo *v = new Hajo(this, _pozx,_pozy, (float)_size,(float)_size, irany, hossz, it_x, it_y);
                             switch (v->_hossz){
                                 case 1 : _t->_h1++; break;
                                 case 2 : _t->_h2++; break;
@@ -163,15 +169,14 @@ void Terulet::select(event ev, int hossz, string irany)
                         }
                     }while(van_hajo && c<64);
                     if(c<64){
-                        Hajo *v = new Hajo(this, _t->_v[px][py]->_pozx,_t->_v[px][py]->_pozy, (float)_size,(float)_size, irany, i);
+                        Hajo *v = new Hajo(this, _t->_v[px][py]->_pozx,_t->_v[px][py]->_pozy, (float)_size,(float)_size, irany, i, px, py);
                         _t->_hajo.push_back(v);
-                        cout << px+1 << " " << py+1 << endl;
                         d++;
                         for(int j=0; j<i; j++){
                             _t->_v[px+j][py]->_hajo=true;
-                            _t->_v[px+j][py]->_r=gray;
-                            _t->_v[px+j][py]->_g=gray;
-                            _t->_v[px+j][py]->_b=gray;
+//                            _t->_v[px+j][py]->_r=gray;
+//                            _t->_v[px+j][py]->_g=gray;
+//                            _t->_v[px+j][py]->_b=gray;
                         }
                         _t->rajzol();
                         gout << refresh;
@@ -194,15 +199,14 @@ void Terulet::select(event ev, int hossz, string irany)
                         }
                     }while(van_hajo && c<64);
                     if(c<64){
-                        Hajo *v = new Hajo(this, _t->_v[px][py]->_pozx,_t->_v[px][py]->_pozy, (float)_size,(float)_size, irany, i);
+                        Hajo *v = new Hajo(this, _t->_v[px][py]->_pozx,_t->_v[px][py]->_pozy, (float)_size,(float)_size, irany, i, px, py);
                         _t->_hajo.push_back(v);
-                        cout << px+1 << " " << py+1 << endl;
                         d++;
                         for(int j=0; j<i; j++){
                             _t->_v[px][py+j]->_hajo=true;
-                            _t->_v[px][py+j]->_r=gray;
-                            _t->_v[px][py+j]->_g=gray;
-                            _t->_v[px][py+j]->_b=gray;
+//                            _t->_v[px][py+j]->_r=gray;
+//                            _t->_v[px][py+j]->_g=gray;
+//                            _t->_v[px][py+j]->_b=gray;
                         }
                     }
                 }
@@ -211,6 +215,113 @@ void Terulet::select(event ev, int hossz, string irany)
         }
         a++;
     }
+}
+void Tabla::select(event ev, int hossz, string irany, bool &loves, bool &game_over)
+{
+    if(e_ID == 3){
+        for(size_t x=0; x<_v.size(); x++){
+            for(size_t y=0; y<_v.size(); y++){
+                _v[x][y]->select(ev,hossz,irany,loves,game_over);
+            }
+        }
+    }
+    if(e_ID == 4){
+        _v[0][0]->select(ev,hossz,irany,loves,game_over);
+    }
+}
+void Terulet::select(event ev, int hossz, string irany, bool &loves, bool &game_over)
+{
+    srand(time(NULL));
+    if(_t->e_ID == 3){
+        int ex = ev.pos_x;
+        int ey = ev.pos_y;
+        if(_t->_nev == "cpu"){
+            if(/*!_hajo && */!_lottek_mar){
+                _r=_g=0;
+                _b=light_blue;
+            }
+//            if(_hajo && !_lottek_mar){
+//                _r=_g=_b=gray;
+//            }
+            if(ex>_pozx && ex<_pozx+_meretx && ey>_pozy && ey<_pozy+_merety && !_lottek_mar){
+                _r=_g=_b=white;
+                if(ev.button==btn_left){
+                    loves=true;
+                    if(_hajo){
+                        _r=light_red;
+                        _g=_b=0;
+                        _lottek_mar=true;
+                    }
+                    else{
+                        _r=_g=0;
+                        _b=blue;
+                        _lottek_mar=true;
+                    }
+                }
+            }
+            int all_live = _t->_hajo.size();
+            for(size_t i=0; i<_t->_hajo.size(); i++){
+                int elet=_t->_hajo[i]->_hely.size();
+                for(size_t j=0; j<_t->_hajo[i]->_hely.size(); j++){
+                    if(_t->_hajo[i]->_hely[j]->_lottek_mar){
+                        elet--;
+                    }
+                }
+                if(!elet){
+                    all_live--;
+                    for(size_t j=0; j<_t->_hajo[i]->_hely.size(); j++){
+                        _t->_hajo[i]->_hely[j]->_g=0;
+                        _t->_hajo[i]->_hely[j]->_b=0;
+                        _t->_hajo[i]->_hely[j]->_r=red;
+                    }
+                }
+            }
+            if(!all_live){
+                game_over=true;
+            }
+        }
+    }
+    if(_t->e_ID == 4){
+        int x;
+        int y;
+        if(_t->_nev == "player"){
+            do{
+                x = rand()%tabla_meret;
+                y = rand()%tabla_meret;
+            }while(_t->_v[x][y]->_lottek_mar);
+            if(_t->_v[x][y]->_hajo){
+                _t->_v[x][y]->_r=light_red;
+                _t->_v[x][y]->_g=_t->_v[x][y]->_b=0;
+                _t->_v[x][y]->_lottek_mar=true;
+            }
+            else{
+                _t->_v[x][y]->_r=_t->_v[x][y]->_g=0;
+                _t->_v[x][y]->_b=blue;
+                _t->_v[x][y]->_lottek_mar=true;
+            }
+            int all_live = _t->_hajo.size();
+            for(size_t i=0; i<_t->_hajo.size(); i++){
+                int elet=_t->_hajo[i]->_hely.size();
+                for(size_t j=0; j<_t->_hajo[i]->_hely.size(); j++){
+                    if(_t->_hajo[i]->_hely[j]->_lottek_mar){
+                        elet--;
+                    }
+                }
+                if(!elet){
+                    all_live--;
+                    for(size_t j=0; j<_t->_hajo[i]->_hely.size(); j++){
+                        _t->_hajo[i]->_hely[j]->_g=0;
+                        _t->_hajo[i]->_hely[j]->_b=0;
+                        _t->_hajo[i]->_hely[j]->_r=red;
+                    }
+                }
+            }
+            if(!all_live){
+                game_over=true;
+            }
+        }
+    }
+
 }
 bool Tabla::get_terulet(int x, int y)
 {

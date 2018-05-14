@@ -17,6 +17,7 @@ public:
     virtual void ertek_valtozas(event ev);
     virtual void select(event ev);
     virtual void select(event ev, int a, string s);
+    virtual void select(event ev, int a, string s, bool &b, bool &c);
 };
 
 #endif // WIDGET_HPP_INCLUDED

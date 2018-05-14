@@ -9,6 +9,7 @@ class Terulet;
 class Hajo : public Widget
 {
 friend class Terulet;
+friend class Enablakom;
 protected:
     Terulet *_t;
     vector<Terulet*> _hely;
@@ -16,7 +17,7 @@ protected:
     int _hossz;
     int _size;
 public:
-    Hajo(Terulet *t, float x, float y, float sx, float sy, std::string irany, int hossz);
+    Hajo(Terulet *t, float x, float y, float sx, float sy, std::string irany, int hossz, int it_x, int it_y);
     virtual void rajzol() const override{};
 };
 
